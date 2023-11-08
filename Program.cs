@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using CommandLine;
+﻿using CommandLine;
 using MetadataExtractor;
 using MetadataExtractor.Formats.Exif;
 using Directory = System.IO.Directory;
@@ -21,7 +20,7 @@ static class Program
             }
             foreach (var file in files)
             {
-                if (file.Contains(".jpg"))
+                if (file.Contains(".jpg") || file.Contains(".JPEG") || file.Contains(".jpeg"))
                 {
                     var directories = ImageMetadataReader.ReadMetadata(Path.Combine(arguments.Value.Path, file));
                     var gpsMetadata = directories.OfType<GpsDirectory>().FirstOrDefault();
@@ -29,11 +28,11 @@ static class Program
                     {
                         var latitude = gpsMetadata.GetDescription(GpsDirectory.TagLatitude);
                         var longitude = gpsMetadata.GetDescription(GpsDirectory.TagLongitude);
-                        Console.WriteLine($"{latitude}, {longitude}");
+                        Console.WriteLine($"{Path.GetFileName(file)} Latitude: {latitude}, Longitude: {longitude}");
                     }
                     else
                     {
-                        Console.WriteLine($"{file} is not a JPG");
+                        Console.WriteLine($"{Path.GetFileName(file)} did not have any geolocation data");
                     }
                 }
                 else
